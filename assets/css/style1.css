@@ -1,0 +1,258 @@
+/* Yüzen menü */
+.floating-menu {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+}
+
+/* Profil fotoğrafı */
+.profile-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.profile-img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  object-fit: cover; /* Oranı koruyarak kapsayıcıya sığdır */
+}
+
+/* Menü seçenekleri gizli */
+.menu-options {
+  position: absolute;
+  top: 60px;
+  right: 0;
+  display: none;
+  background-color: #333;
+  border-radius: 5px;
+  padding: 10px;
+  min-width: 150px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Hafif gölge efekti */
+}
+
+/* Menü öğeleri */
+.menu-options ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu-options ul li {
+  margin-bottom: 10px;
+}
+
+/* Menü bağlantılarına stil */
+.menu-options ul li a {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 14px;
+  padding: 10px;
+  display: block;
+  background-color: #34495e;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, transform 0.3s ease; /* Hover efektleri */
+}
+
+/* Hover efekti */
+.menu-options ul li a:hover {
+  background-color: #16a085;
+  transform: scale(1.05); /* Hover sırasında büyüme efekti */
+}
+
+/* Profil fotoğrafına hover efekti */
+.profile-img:hover {
+  transform: translateY(-5px);
+}
+
+/* Profil fotoğrafı veya menü üzerine gelindiğinde menü açılması */
+.profile-container:hover .menu-options,
+.menu-options:hover {
+  display: block;
+}
+
+/* Menü öğelerine hover ve aktif stil ekle */
+.sidebar a {
+  display: block;
+  padding: 15px;
+  text-decoration: none;
+  color: #fff;
+  font-size: 18px;
+  border-radius: 5px; /* Kenarları yuvarlatmak için */
+  transition: background-color 0.3s ease, padding-left 0.3s ease; /* Hover efektleri */
+}
+
+.sidebar a:hover {
+  background-color: #34495e;
+  padding-left: 25px; /* Hover sırasında sola kayma efekti */
+}
+
+/* Aktif menü öğesi için stil */
+.sidebar a.active {
+  background-color: #16a085; /* Aktif öğe rengi */
+  font-weight: bold; /* Aktif öğe daha belirgin */
+  padding-left: 30px; /* Aktif menü öğesi için ekstra boşluk */
+  color: #fff;
+}
+
+/* Logo stilini ekle */
+.logo-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px; /* Logo ve profil arasında boşluk */
+}
+
+.logo {
+  width: 150px; /* Logo boyutu */
+  height: auto;
+  display: block;
+}
+
+/* Genel sidebar stilleri */
+.sidebar {
+  width: 250px;
+  background-color: transparent;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  transition: transform 0.3s ease-in-out;
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+  border-top-right-radius: 15px; /* Sağ üst köşe yuvarlak */
+  border-bottom-right-radius: 15px; /* Sağ alt köşe yuvarlak */
+}
+
+/* Menü öğeleri */
+.sidebar a {
+  display: block;
+  padding: 15px;
+  text-decoration: none;
+  color: #fff;
+  font-size: 18px;
+  border-radius: 5px; /* Menü öğeleri için kenar yuvarlama */
+  background-color: #2c3e50; /* Menü öğeleri için arka plan */
+  transition: background-color 0.3s ease, padding-left 0.3s ease; /* Hover efektleri */
+}
+
+/* Menü öğelerinin hover efekti */
+.sidebar a:hover {
+  background-color: #34495e;
+  padding-left: 25px;
+}
+
+/* Aktif menü öğesi için stil */
+.sidebar a.active {
+  background-color: #16a085;
+  font-weight: bold;
+  padding-left: 30px;
+  color: #fff;
+}
+
+
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  position: relative;
+}
+
+/* Menü seçenekleri */
+.menu-options ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.menu-options ul li a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 16px;
+  padding: 10px;
+  display: block;
+  background-color: #34495e;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.menu-options ul li a:hover {
+  background-color: #16a085;
+}
+
+/* Bildirim konteynerini sağ üst köşeye yerleştir */
+#notification-container {
+  position: fixed; /* Sayfada sabit kalmasını sağlar */
+  top: 20px; /* Üstten 20px mesafe */
+  right: 85px; /* Sağdan 20px mesafe */
+  background-color: #343a40; /* Arka plan rengi */
+  padding: 10px; /* İçerik boşluğu */
+  border-radius: 8px; /* Köşe yuvarlatma */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Hafif gölge efekti */
+  z-index: 1000; /* Diğer öğelerin üstünde görünmesini sağlar */
+}
+
+/* Bildirim simgesi */
+#notification-icon {
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Bildirim listesi */
+#notification-dropdown {
+  display: none; /* Başlangıçta gizli */
+  margin-top: 10px; /* İkon ile bildirim listesi arasında boşluk */
+  padding: 0px;
+  border: 1px solid #212529;
+  background-color: #343a40;
+  max-height: 250px;
+  overflow-y: auto;
+  width: 300px; /* Bildirim kutusunun genişliği */
+  border-radius: 5px;
+}
+
+/* Bildirim listesinde her öğe */
+#notification-list li {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+}
+
+#notification-list li:last-child {
+  border-bottom: none; /* Son öğenin alt sınırını kaldır */
+}
+
+#notification-list li a {
+  text-decoration: none;
+  color: #333;
+}
+
+#content-area {
+  padding: 20px;
+  margin-top: 80px;
+  border: 1px solid #8d8d8d;
+  margin-left: 250px; /* Menü genişliğine göre ayarlayın */
+  display: flex;
+}
+
+
+/* Logo stilini ekle */
+.logo-container {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%); /* Logoyu yatayda ortalar */
+  margin-top: 20px;
+}
+
+.logo {
+  width: 250px; /* Logo boyutu */
+  height: auto;
+  display: block;
+}

@@ -1,0 +1,62 @@
+/project-management-system
+│
+├── /assets              # Proje ile ilgili görseller ve statik dosyalar
+│   ├── /images          # Kullanıcılar, projeler için görseller
+│   ├── /css             # Stil dosyaları (CSS)
+│   ├── /js              # JavaScript dosyaları
+│   └── /uploads         # Fotoğraf ve belge yüklemeleri
+│
+├── /includes            # Genel fonksiyonlar ve bağlantılar
+│   ├── /db_config.php   # Veritabanı bağlantı ayarları
+│   ├── /functions.php   # Genel fonksiyonlar (form işleme, dosya yükleme, vb.)
+│   ├── /auth.php        # Kimlik doğrulama işlemleri (login, logout vb.)
+│   └── /notifications.php  # Bildirim gönderme fonksiyonları
+│
+├── /models              # Veritabanı modelleri
+│   ├── /Project.php     # Proje model dosyası
+│   ├── /Engineer.php    # Mühendis model dosyası
+│   ├── /Stock.php       # Stok model dosyası
+│   ├── /Equipment.php   # Ekipman model dosyası
+│   └── /Personnel.php   # Personel model dosyası
+│
+├── /controllers         # Uygulama mantığını yöneten dosyalar
+│   ├── /ProjectController.php  # Proje ile ilgili işlemleri yöneten dosya
+│   ├── /EngineerController.php # Mühendis işlemleri
+│   ├── /StockController.php    # Stok işlemleri
+│   ├── /TaskController.php     # Görev ve süreç yönetimi
+│   └── /NotificationController.php # Bildirim işlemleri
+│
+├── /views               # HTML dosyaları ve kullanıcı arayüzü
+│   ├── /index.php       # Ana sayfa
+│   ├── /login.php       # Giriş ekranı
+│   ├── /project_entry.php  # Proje giriş formu
+│   ├── /quotation-form.php  # Teklif formu
+│   ├── /discovery-form.php  # Keşif formu
+│   ├── /material-request.php # Malzeme talepleri
+│   ├── /production-status.php  # Üretim durumu
+│   ├── /delivery-form.php  # Proje teslim formu
+│   └── /final-form.php   # Hakedis formu
+│
+├── /logs                # Log dosyaları (hata raporları, günlük işlemler vb.)
+│
+├── /config              # Proje yapılandırma dosyaları
+│   ├── /config.php      # Genel yapılandırma
+│   └── /smtp_config.php # E-posta bildirimleri için yapılandırma
+│
+├── /api                 # API ve backend servisleri
+│   ├── /project-api.php # Proje API işlemleri
+│   ├── /material-api.php # Malzeme API işlemleri
+│   └── /notification-api.php # Bildirim API işlemleri
+│
+└── /uploads             # Yüklenen dosyaların depolandığı alan
+    ├── /projects        # Projeye ait dosyalar
+    ├── /materials       # Malzeme talepleri ile ilgili belgeler
+    └── /photos          # Proje fotoğrafları
+
+
+/// php hatalarini ekrana yazdirma 
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+////

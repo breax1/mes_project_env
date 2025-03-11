@@ -1,0 +1,25 @@
+.link-115 {
+  color: #ffffff;
+  font-size: 20px;
+  text-decoration: none;
+  padding: 10px 20px;
+  margin: 0 5px;
+  position: relative;
+}
+
+.link-115::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #F1C40F, #E74C3C); /* Tweak the color if needed */
+  border-radius: 0;
+  transition: all 0.5s ease-in-out;
+}
+
+.link-115:hover::before {
+  width: 100%;
+  border-radius: 50%;
+}
