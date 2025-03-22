@@ -1,7 +1,14 @@
 <?php
-// Veritabanı bağlantısını başlat
 
 session_start(); 
+// Kullanıcının oturum açıp açmadığını kontrol edin
+if (!isset($_SESSION['user_id'])) {
+    // Oturum açılmamışsa giriş sayfasına yönlendirin
+    header("Location: ../login.php");
+    exit();
+}
+
+
 include("../includes/db_config.php");
 
 // Kullanıcıların mühendis rolünü listelemek için sorgu

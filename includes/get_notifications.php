@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt->close();
 } else {
     // GET isteği ile bildirimleri sorgula
-    $query = "SELECT id, message, is_read, created_at FROM notifications WHERE user_id = ? ORDER BY created_at ";
+    $query = "SELECT id, message, type, is_read, created_at FROM notifications WHERE user_id = ? ORDER BY created_at DESC";
     $stmt = $baglanti->prepare($query);
     $stmt->bind_param("i", $currentUserId);
     $stmt->execute();

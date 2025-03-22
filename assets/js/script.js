@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Bildirim izni iste
     if (Notification.permission !== "granted") {
-        Notification.requestPermission().then(function(permission) {
+        Notification.requestPermission().then(function (permission) {
             if (permission === "granted") {
                 console.log("Bildirim izni verildi.");
             } else {
@@ -25,55 +25,44 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let initialLoad = true; // Sayfa ilk yüklendiğinde true olacak
 
-    // Bildirimleri AJAX ile al
     function fetchNotifications() {
         fetch('../includes/get_notifications.php')
             .then((response) => response.json())
             .then((data) => {
                 console.log(data); // Gelen veriyi kontrol etmek için konsola yazdırın
-                
+    
                 // Eğer yeni bildirim varsa ses çal ve masaüstü bildirimi göster
                 const newNotifications = data.unreadCount > parseInt(notificationCount.textContent);
                 if (newNotifications && !initialLoad) {
                     audio.play().catch((e) => console.log("Ses oynatırken hata:", e));
                     const latestNotification = data.notifications
-                        .filter(notification => !notification.is_read)
-                        .pop(); // Son bildirimi al
+                        .filter(notification => !notification.is_read)[0]; // İlk bildirimi al
                     if (latestNotification) {
                         showNotification(latestNotification.message, 'info');
                     }
                 }
-
+    
                 notificationCount.textContent = data.unreadCount;
-
+    
                 // Bildirimleri listeye ekleyin (sadece okunmamış bildirimler)
                 const unreadNotifications = data.notifications
-                    .filter(notification => !notification.is_read) // Sadece okunmamış bildirimleri filtrele
-                    .reverse(); // En yeni bildirimi en üste koymak için ters sırala
-
+                    .filter(notification => !notification.is_read); // Sadece okunmamış bildirimleri filtrele
+    
                 if (unreadNotifications.length === 0) {
-                    $('#notification-list').html('<li class="no-notifications">Henüz bildiriminiz yok</li>');
+                    notificationList.innerHTML = '<li class="no-notifications">Henüz bildiriminiz yok</li>';
                 } else {
-                    $('#notification-list').html(unreadNotifications
+                    notificationList.innerHTML = unreadNotifications
                         .map((notification) => {
                             return `
-                                <li class="unread">
+                                <li class="unread" data-id="${notification.id}" data-type="${notification.type}">
                                     <p>${notification.message}</p>
                                     <small>${notification.created_at}</small>
-                                    <button class="mark-as-read" data-id="${notification.id}">Okundu</button>
+                                    <button class="mark-as-read" data-id="${notification.id}"></button>
                                 </li>`;
                         })
-                        .join(""));
+                        .join("");
                 }
-
-                // "Okundu" butonlarına olay dinleyici ekleyin
-                document.querySelectorAll('.mark-as-read').forEach(button => {
-                    button.addEventListener('click', function () {
-                        const notificationId = this.getAttribute('data-id');
-                        markAsRead(notificationId);
-                    });
-                });
-
+    
                 initialLoad = false; // İlk yükleme tamamlandı
             })
             .catch((error) => console.error("Bildirim alınırken hata oluştu:", error))
@@ -83,8 +72,117 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     }
 
+    // Bildirime tıklama olayını dinle
+    notificationList.addEventListener('click', function (e) {
+        const notificationElement = e.target.closest('.unread'); // Tıklanan öğe bir bildirim mi?
+        if (notificationElement && !e.target.classList.contains('mark-as-read')) {
+            const notificationId = notificationElement.getAttribute('data-id');
+            const notificationType = notificationElement.getAttribute('data-type');
+            handleNotificationClick(notificationId, notificationType);
+        }
+    });
+
+    // "Okundu" butonuna tıklama olayını dinle
+    notificationList.addEventListener('click', function (e) {
+        if (e.target.classList.contains('mark-as-read')) {
+            const notificationId = e.target.getAttribute('data-id');
+            markAsRead(notificationId, e.target.closest('.unread'));
+        }
+    });
+
+    function loadCheckoutPersonnel() {
+        // Backend'den personel verilerini al
+        $.ajax({
+            url: '../controllers/get_auto_checkout_personnel.php', // Backend endpoint
+            method: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                if (data.status === 'success') {
+                    const container = $('#checkoutPersonnelContainer');
+                    container.empty(); // Önceki içeriği temizle
+    
+                    data.personnel.forEach(function(personnel) {
+                        // Tarih ve saat bilgilerini ayır
+                        const dateTimeParts = personnel.time.split(' '); // ["2025-03-22", "05:00:00"]
+                        const originalDate = new Date(dateTimeParts[0]); // Tarih kısmını Date nesnesine çevir
+                        originalDate.setDate(originalDate.getDate() - 1); // Bir gün öncesine ayarla
+    
+                        // Tarihi YYYY-MM-DD formatına dönüştür
+                        const adjustedDate = originalDate.toISOString().split('T')[0]; // "YYYY-MM-DD" formatı
+    
+                        const time = dateTimeParts[1].slice(0, 5); // Saat kısmı (HH:MM)
+    
+                        // Personel satırını oluştur
+                        const personnelRow = `
+                            <div class="checkout-row" data-id="${personnel.id}" data-date="${adjustedDate}">
+                                <label for="checkoutTime_${personnel.id}">
+                                    ${personnel.name}
+                                    <small>(${adjustedDate})</small> <!-- Tarih bilgisi -->
+                                </label>
+                                <label>
+                                    <input type="checkbox" class="adjust-date-checkbox">
+                                </label>
+                                <input type="time" id="checkoutTime_${personnel.id}" name="checkoutTimes[${personnel.id}]" value="${time}" required>
+                                
+                            </div>
+                        `;
+                        container.append(personnelRow);
+                    });
+                } else {
+                    showNotification('Çıkış yapılan personel bulunamadı.', 'error');
+                }
+            },
+            error: function() {
+                showNotification('Personel verileri alınırken bir hata oluştu.', 'error');
+            }
+        });
+    }
+
+    function handleNotificationClick(notificationId, notificationType) {
+        // Bildirim türüne göre işlem yap
+        switch (notificationType) {
+            case 'personnel_auto':
+                // Çıkış saati popup'ını aç ve içeriği yükle
+                loadPersonnelPageAndOpenPopup();
+                break;
+    
+            default:
+                console.log('Bilinmeyen bildirim türü:', notificationType);
+        }
+    }
+
+    // Çıkış saati popup'ını aç ve personel listesini yükle
+function loadPersonnelPageAndOpenPopup() {
+    const contentArea = document.getElementById("content-area");
+    const page = "views/personel.php";
+
+    fetch(page)
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("Sayfa yüklenemedi!");
+            }
+            return response.text();
+        })
+        .then((html) => {
+            contentArea.innerHTML = html; // İçeriği güncelle
+            executeScripts(contentArea); // Scriptleri çalıştır
+
+            // Popup'ı aç
+            setTimeout(() => {
+                document.getElementById('updateCheckoutPopupOverlay').style.display = 'block';
+                document.getElementById('updateCheckoutPopup').style.display = 'block';
+
+                // Personel listesini doldur
+                loadCheckoutPersonnel();
+            }, 100); // İçerik yüklendikten sonra popup'ı aç
+        })
+        .catch((error) => {
+            contentArea.innerHTML = `<p style="color:red;">Hata: ${error.message}</p>`;
+        });
+}
+
     // Bildirimi okundu olarak işaretle
-    function markAsRead(notificationId) {
+    function markAsRead(notificationId, notificationElement) {
         fetch('../includes/get_notifications.php', {
             method: 'POST',
             headers: {
@@ -95,6 +193,8 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
+                console.log('Bildirim okundu olarak işaretlendi.');
+                notificationElement.remove(); // Bildirimi listeden kaldır
                 fetchNotifications(); // Bildirimleri güncelle
             } else {
                 console.error('Bildirim okundu olarak işaretlenemedi:', data.message);
@@ -108,7 +208,6 @@ document.addEventListener("DOMContentLoaded", function () {
     // Sayfa yüklenince bildirimi bir kere kontrol et
     fetchNotifications();
 });
-
 
 document.addEventListener("DOMContentLoaded", () => {
     // Menü linklerini seç

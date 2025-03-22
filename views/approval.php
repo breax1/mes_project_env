@@ -3,6 +3,15 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 session_start();
+
+// Kullanıcının oturum açıp açmadığını kontrol edin
+if (!isset($_SESSION['user_id'])) {
+    // Oturum açılmamışsa giriş sayfasına yönlendirin
+    header("Location: ../login.php");
+    exit();
+}
+
+
 include("../includes/db_config.php");
 
 // Kullanıcı giriş yapmamışsa giriş sayfasına yönlendir

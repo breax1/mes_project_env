@@ -4,6 +4,15 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 session_start();
+
+// Kullanıcının oturum açıp açmadığını kontrol edin
+if (!isset($_SESSION['user_id'])) {
+    // Oturum açılmamışsa giriş sayfasına yönlendirin
+    header("Location: ../login.php");
+    exit();
+}
+
+
 include("../includes/db_config.php");
 
 date_default_timezone_set('Europe/Istanbul'); // Saat dilimini ayarla
@@ -226,6 +235,7 @@ while ($row = $resultMesaiSaatleri->fetch_assoc()) {
             var currentDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
             $('#tarih').val(currentDateTime);
         }
+
 
         $(document).ready(function() {
             fetchPersonnelData();
@@ -454,12 +464,100 @@ while ($row = $resultMesaiSaatleri->fetch_assoc()) {
                 });
             });
 
+            // Popup açma
+            $('#updateCheckoutPopupClose, #updateCheckoutPopupOverlay').click(function() {
+                $('#updateCheckoutPopupOverlay').hide();
+                $('#updateCheckoutPopup').hide();
+            });
 
-            // Chart.js ile grafik oluşturma
+            $('#updateCheckoutForm').submit(function(event) {
+                event.preventDefault(); // Formun varsayılan gönderimini engelle
+            
+                // Form verilerini manuel olarak oluştur
+                var formData = {};
+                $('.checkout-row').each(function() {
+                    var personnelId = $(this).data('id'); // data-id'den personel ID'sini al
+                    var checkoutDate = $(this).data('date'); // data-date'den tarihi al
+                    var checkoutTime = $(this).find('input[type="time"]').val(); // input'tan zamanı al
+                    var isDateAdjusted = $(this).find('.adjust-date-checkbox').is(':checked'); // Checkbox durumunu kontrol et
+            
+                    // Eğer personnelId veya checkoutDate eksikse hata ver
+                    if (!personnelId || !checkoutDate) {
+                        console.error('Eksik veri: personnelId veya checkoutDate tanımlı değil.');
+                        return;
+                    }
+            
+                    // Eğer checkbox işaretliyse tarihi bir gün ileri al
+                    if (isDateAdjusted) {
+                        var dateObj = new Date(checkoutDate);
+                        dateObj.setDate(dateObj.getDate() + 1); // Tarihi bir gün ileri al
+                        checkoutDate = dateObj.toISOString().split('T')[0]; // YYYY-MM-DD formatına dönüştür
+                    }
+            
+                    // Sadece saat 05:00:00 dışında bir değer girilmişse ekle
+                    if (checkoutTime !== '05:00') {
+                        var datetime = checkoutDate + ' ' + checkoutTime + ':00'; // DATETIME formatına dönüştür (YYYY-MM-DD HH:MM:SS)
+                        formData[personnelId] = datetime; // Form verisine ekle
+                    }
+                });
+            
+                console.log('Gönderilen Veriler:', formData); // Gönderilen verileri kontrol edin
+            
+                // Eğer formData boşsa işlem yapma
+                if (Object.keys(formData).length === 0) {
+                    showNotification('Değişiklik yapılmadı.', 'info');
+                    return;
+                }
+            
+                // AJAX isteği gönder
+                $.ajax({
+                    url: '../controllers/update_checkout_time.php', // Backend endpoint
+                    method: 'POST',
+                    data: { checkoutTimes: formData }, // Verileri gönder
+                    success: function(response) {
+                        console.log('Dönen Yanıt:', response); // Yanıtı kontrol edin
+                        var data = JSON.parse(response);
+                        if (data.status === 'success') {
+                            showNotification(data.message, 'success'); // Başarılı bildirim
+                        } else {
+                            showNotification(data.message, 'error'); // Hata bildirim
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Hata:', error);
+                        console.error('Detaylar:', xhr.responseText); // Hata detaylarını kontrol edin
+                        showNotification('Çıkış saati güncellenirken bir hata oluştu.', 'error'); // Hata bildirim
+                    }
+                });
+            });
+
+
+            // Tarih aralığını oluşturma fonksiyonu
+            function getDateRange(startDate, endDate) {
+                const dates = [];
+                let currentDate = new Date(startDate);
+                while (currentDate <= endDate) {
+                    dates.push(currentDate.toISOString().split('T')[0]); // YYYY-MM-DD formatı
+                    currentDate.setDate(currentDate.getDate() + 1);
+                }
+                return dates;
+            }
+
+            // Giriş grafiği için
             var ctxGiris = document.getElementById('girisGrafik').getContext('2d');
             var girisVerileri = <?php echo json_encode($girisVerileri); ?>;
-            var labelsGiris = girisVerileri.map(function(item) { return item.tarih; });
-            var dataGiris = girisVerileri.map(function(item) { return item.giris_sayisi; });
+
+            // Tüm tarihleri kapsayan labels dizisi (örneğin son 30 gün)
+            const startDate = new Date();
+            startDate.setDate(startDate.getDate() - 29); // Son 30 gün
+            const endDate = new Date();
+            const labelsGiris = getDateRange(startDate, endDate);
+
+            // Verileri eşleştirme ve eksik günleri 0 ile doldurma
+            const dataGiris = labelsGiris.map(date => {
+                const entry = girisVerileri.find(item => item.tarih === date);
+                return entry ? entry.giris_sayisi : 0; // Veri yoksa 0
+            });
 
             var girisGrafik = new Chart(ctxGiris, {
                 type: 'line',
@@ -470,11 +568,20 @@ while ($row = $resultMesaiSaatleri->fetch_assoc()) {
                         data: dataGiris,
                         borderColor: 'rgba(75, 192, 192, 1)',
                         backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderWidth: 2 // Çizgi kalınlığını artırdık
+                        borderWidth: 2
                     }]
                 },
                 options: {
                     scales: {
+                        x: {
+                            ticks: {
+                                color: function(context) {
+                                    const date = new Date(labelsGiris[context.index]);
+                                    const isWeekend = date.getDay() === 0 || date.getDay() === 6; // Pazar (0) veya Cumartesi (6)
+                                    return isWeekend ? '#e74c3c' : '#333'; // Haftasonu kırmızı, diğer günler koyu gri
+                                }
+                            }
+                        },
                         y: {
                             beginAtZero: true
                         }
@@ -482,11 +589,17 @@ while ($row = $resultMesaiSaatleri->fetch_assoc()) {
                 }
             });
 
-            // Mesai saatleri grafiği
+            // Mesai grafiği için
             var ctxMesai = document.getElementById('mesaiGrafik').getContext('2d');
             var mesaiVerileri = <?php echo json_encode($mesaiVerileri); ?>;
-            var labelsMesai = mesaiVerileri.map(function(item) { return item.tarih; });
-            var dataMesai = mesaiVerileri.map(function(item) { return item.gunluk_toplam_mesai_saat; }); // Saniyeleri saate dönüştür
+
+            const labelsMesai = getDateRange(startDate, endDate); // Aynı tarih aralığını kullan
+
+            // Verileri eşleştirme ve eksik günleri 0 ile doldurma
+            const dataMesai = labelsMesai.map(date => {
+                const entry = mesaiVerileri.find(item => item.tarih === date);
+                return entry ? entry.gunluk_toplam_mesai_saat : 0; // Veri yoksa 0
+            });
 
             var mesaiGrafik = new Chart(ctxMesai, {
                 type: 'line',
@@ -497,11 +610,20 @@ while ($row = $resultMesaiSaatleri->fetch_assoc()) {
                         data: dataMesai,
                         borderColor: 'rgba(255, 99, 132, 1)',
                         backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                        borderWidth: 2 // Çizgi kalınlığını artırdık
+                        borderWidth: 2
                     }]
                 },
                 options: {
                     scales: {
+                        x: {
+                            ticks: {
+                                color: function(context) {
+                                    const date = new Date(labelsGiris[context.index]);
+                                    const isWeekend = date.getDay() === 0 || date.getDay() === 6; // Pazar (0) veya Cumartesi (6)
+                                    return isWeekend ? '#e74c3c' : '#333'; // Haftasonu kırmızı, diğer günler koyu gri
+                                }
+                            }
+                        },
                         y: {
                             beginAtZero: true
                         }
@@ -696,6 +818,17 @@ while ($row = $resultMesaiSaatleri->fetch_assoc()) {
             <label for="tarih">Tarih ve Saat:</label>
             <input type="datetime-local" id="tarih" name="tarih" required><br>
             <button type="submit" id="veriEkleButton">Veri Ekle</button>
+        </form>
+    </div>
+    <div class="popup-overlay" id="updateCheckoutPopupOverlay"></div>
+    <div class="popup" id="updateCheckoutPopup">
+        <span class="popup-close" id="updateCheckoutPopupClose">×</span>
+        <h2>Çıkış Saatlerini Güncelle</h2>
+        <form id="updateCheckoutForm">
+            <div id="checkoutPersonnelContainer">
+                <!-- Dinamik olarak doldurulacak -->
+            </div>
+            <button type="submit" id="updateCheckoutSubmitButton">Güncelle</button>
         </form>
     </div>
 

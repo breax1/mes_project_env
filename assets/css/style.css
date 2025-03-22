@@ -100,6 +100,7 @@ body {
 
 .header {
     height: 60px; /* Üst bar yüksekliği */
+    z-index: 1000;
 }
 
 .footer {
@@ -111,103 +112,222 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    transform: translate(-180%, 20%); /* Sol üst köşeye hizala */
+    transform: translate(-180%, 20%);
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: white;
+    background-color: #ffffff;
     border-radius: 50%;
-    padding: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 8px; /* Daha geniş bir alan için artırdım */
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15); /* Daha yumuşak gölge */
+    z-index: 1000;
+    transition: transform 0.3s ease; /* Hover için hareket efekti */
+}
+
+#notification-container:hover {
+    transform: translate(-180%, 15%); /* Hafif yukarı kayma */
 }
 
 /* Bildirim simgesi */
 #notification-icon {
-    position: relative; /* Konumlandırma için gerekli */
-    margin-top: 3px; /* Üst boşluk */
-    font-size: 28px; /* Simgelerin boyutu */
-    cursor: pointer; /* İmleç değişimi */
-    color: #007bff; /* Simge rengi */
+    position: relative;
+    margin-top: 3px;
+    font-size: 28px;
+    cursor: pointer;
+    color: #007bff;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+#notification-icon:hover {
+    color: #0056b3;
+    transform: scale(1.1); /* Hafif büyüme efekti */
 }
 
 /* Bildirim sayısı */
 .notification-count {
-    position: absolute; /* Daireyi konumlandırmak için */
-    top: -5px;
-    right: -10px; /* Dairenin simge ile hizalanması için */
-    background-color: red; /* Arka plan rengi */
-    color: white; /* Yazı rengi */
-    border-radius: 50%; /* Daire şekli */
-    width: 20px; /* Dairenin genişliği */
-    height: 20px; /* Dairenin yüksekliği */
-    display: flex; /* İçerik hizalaması için flexbox kullan */
-    align-items: center; /* Dikey ortalama */
-    justify-content: center; /* Yatay ortalama */
-    font-size: 17px; /* Yazı boyutu */
-    font-weight: bold; /* Kalın yazı */
+    position: absolute;
+    top: -8px; /* Daha iyi hizalama */
+    right: -12px;
+    background-color: #e74c3c; /* Daha canlı kırmızı */
+    color: white;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px; /* Daha küçük ve zarif */
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Hafif gölge */
+    transition: transform 0.3s ease;
 }
 
-#notification-icon:hover {
-    color: #0056b3; /* Üzerine gelince daha koyu mavi */
-    transform: translate(5px, -5px); /* Hem X hem de Y ekseninde hareket */
+.notification-count:hover {
+    transform: scale(1.1); /* Hafif büyüme */
 }
-
 
 /* Bildirim listesi */
 #notification-dropdown {
-    display: none; /* Başlangıçta gizli */
-    position: absolute; /* Bağlı olduğu öğeye göre konumlandırma */
-    top: calc(100% + 20px); /* Butonun hemen altına ve 10px boşluk bırak */
-    left: 50%; /* Sol kenarını ortalamak için */
-    transform: translateX(-59%); /* Ortalamak için sola kaydır */
-    padding: 0;
-    border: 1px solid #ccc; /* Açık gri kenar rengi */
-    background-color: #ffffff; /* Arka plan rengi */
-    max-height: 250px;
+    display: none;
+    position: absolute;
+    top: calc(100% + 25px); /* Daha fazla boşluk */
+    margin-left: 220px;
+    transform: translateX(-50%); /* Tam ortalamak için */
+    padding: 10px 0; /* İç boşluk */
+    border: none; /* Kenarlığı kaldırdım, gölge yeterli */
+    background-color: #ffffff;
+    max-height: 300px; /* Daha geniş alan */
     overflow-y: auto;
-    width: 300px; /* Bildirim kutusunun genişliği */
-    border-radius: 5px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Gölge efekti */
-    min-height: 450%;
-    z-index: 1000;
+    width: 350px; /* Biraz daha geniş */
+    border-radius: 8px; /* Daha yumuşak köşeler */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); /* Daha belirgin gölge */
+    z-index: 10000; /* Daha yüksek z-index */
+    cursor: default; /* Pointer yerine default */
 }
 
+/* Bildirim yoksa mesaj */
 .no-notifications {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 175px;
-    font-weight: bold;
+    font-weight: 600;
     text-align: center;
     padding: 12px 16px;
-    color: #666;
+    color: #7f8c8d; /* Daha yumuşak gri ton */
+    font-size: 15px;
 }
 
+/* Bildirim listesi genel stil */
+#notification-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    cursor: context-menu;
+}
 
-/* Bildirim listesinde her öğe */
+/* Her bir bildirim öğesi */
 #notification-list li {
-padding: 12px 15px; /* İçerik boşluğu */
-border-bottom: 1px solid #eee; /* Daha açık bir sınır rengi */
-transition: background-color 0.3s; /* Geçiş efekti */
+    display: flex; /* İçeriği yan yana hizalamak için */
+    justify-content: space-between; /* Metin ve buton arasında boşluk */
+    align-items: center; /* Dikey hizalama */
+    padding: 14px 18px; /* Daha ferah bir alan */
+    border-bottom: 1px solid #ececec; /* Daha açık sınır */
+    background-color: #ffffff;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    border-bottom: 2px solid transparent; /* Alt çizgi için başlangıç */
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(120, 150, 214, 1), rgba(0, 0, 0, 0)); /* Gradyan efekti */
+    background-size: 100% 2px; /* Gradyan boyutu */
+    background-repeat: no-repeat; /* Tekrar etme */
+    background-position: bottom; /* Alt kısımda konumlandır */
 }
 
+/* Hover efekti */
 #notification-list li:hover {
-background-color: #f1f1f1; /* Üzerine gelince arka plan rengi değişir */
+    background-color: #f8fafc; /* Daha temiz bir hover rengi */
 }
 
+/* Son öğenin alt sınırını kaldır */
 #notification-list li:last-child {
-border-bottom: none; /* Son öğenin alt sınırını kaldır */
+    border-bottom: none;
 }
 
+/* Bildirim bağlantıları */
 #notification-list li a {
-text-decoration: none;
-color: #333;
-display: block; /* Tüm öğeyi kapsar */
-font-weight: 500; /* Yazı kalınlığı */
+    text-decoration: none;
+    color: #34495e; /* Daha koyu ve zarif gri-mavi */
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1.4;
+    transition: color 0.3s ease;
+    flex-grow: 1; /* Metnin alanı kaplamasını sağlar */
 }
 
+/* Bağlantı hover efekti */
 #notification-list li a:hover {
-color: #007bff; /* Üzerine gelince mavi renk */
+    color: #1abc9c; /* Canlı turkuaz ton */
+}
+
+/* Okunmamış bildirimler */
+#notification-list li.unread {
+    background-color: #e8f4f8; /* Hafif turkuaz-mavi ton */
+    font-weight: 600;
+}
+
+#notification-list li.unread a {
+    color: #16a085; /* Okunmamışlar için turkuaz ton */
+}
+
+/* Bildirim öncesi işaret */
+#notification-list li:before {
+    content: '\2022';
+    color: #1abc9c; /* Turkuaz ton */
+    font-size: 18px;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+/* Okundu butonu */
+.mark-as-read {
+    background-color: #2ecc71; /* Yeşil ton */
+    color: #ffffff;
+    border: none;
+    border-radius: 50%; /* Daire şekli */
+    width: 35px; /* Daire boyutu - genişlik */
+    height: 20px; /* Daire boyutu - yükseklik (eşit olmalı) */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px; /* Tik işareti boyutu */
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    padding: 0; /* Varsayılan padding'i sıfırla */
+    margin-left: 30px; /* Sağa boşluk */
+    line-height: 1; /* Yazı yüksekliğini sıfırla */
+    box-sizing: border-box; /* Padding ve border'ın boyutu etkilemesini önler */
+}
+
+/* Tik işareti */
+.mark-as-read:before {
+    content: '\2713'; /* Unicode tik işareti */
+    font-weight: bold;
+    display: block; /* İçeriği tam ortalamak için */
+}
+
+/* Hover efekti */
+.mark-as-read:hover {
+    background-color: #27ae60; /* Daha koyu yeşil */
+    transform: scale(1.1); /* Hafif büyüme */
+}
+
+/* Aktif (tıklanma) efekti */
+.mark-as-read:active {
+    transform: scale(0.95); /* Hafif küçülme */
+}
+
+/* Scrollbar stili */
+#notification-dropdown {
+    scrollbar-width: thin;
+    scrollbar-color: #1abc9c #f8fafc;
+}
+
+#notification-dropdown::-webkit-scrollbar {
+    width: 6px;
+}
+
+#notification-dropdown::-webkit-scrollbar-track {
+    background: #f8fafc;
+    border-radius: 8px;
+}
+
+#notification-dropdown::-webkit-scrollbar-thumb {
+    background: #1abc9c;
+    border-radius: 8px;
+}
+
+#notification-dropdown::-webkit-scrollbar-thumb:hover {
+    background: #16a085;
 }
 
 
@@ -855,6 +975,11 @@ canvas {
     height: auto;
 }
 
+.popup h2 {
+    margin-bottom: 20px; /* Başlık ile form arasına 20px boşluk ekle */
+    text-align: center; /* Başlığı ortala */
+}
+
 .popup form {
     display: flex;
     flex-direction: column;
@@ -914,9 +1039,52 @@ canvas {
     margin: 0 10px 0 0; /* Label ile checkbox arasına boşluk ekle */
 }
 
+/* Satır düzeni */
+.checkout-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 10px; /* Çizgi ile içerik arasında boşluk */
+    position: relative; /* Gradyan çizgi için gerekli */
+    padding-top: 10px;
+}
 
+/* Alt çizgiye gradyan ekle */
+.checkout-row::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px; /* Çizgi kalınlığı */
+    background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(120, 150, 214, 1), rgba(0, 0, 0, 0)); /* Gradyan */
+}
+/* Son satırda çizgiyi kaldırmak için */
+.checkout-row:last-child {
+    border-bottom: none;
+}
 
+/* Label ve input alanları */
+.checkout-row label {
+    flex: 1;
+    margin-right: 10px;
+    font-weight: bold;
+    display: flex; /* Label içindeki elemanları dikey hizalamak için */
+    flex-direction: column; /* Ad ve tarih alt alta */
+}
 
+.checkout-row input[type="time"] {
+    flex: 2;
+    max-width: 160px;
+}
+
+.checkout-row small {
+    font-size: 15px;
+    color: #7896d6;
+    margin-top: 5px; /* Tarih ile ad arasında boşluk */
+    display: block;
+}
 
 /* dashboard */
 .dashboard-container {
