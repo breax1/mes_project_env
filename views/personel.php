@@ -479,16 +479,20 @@ while ($row = $resultMesaiSaatleri->fetch_assoc()) {
                     var personnelId = $(this).data('id'); // data-id'den personel ID'sini al
                     var checkoutDate = $(this).data('date'); // data-date'den tarihi al
                     var checkoutTime = $(this).find('input[type="time"]').val(); // input'tan zamanı al
-                    var isDateAdjusted = $(this).find('.adjust-date-checkbox').is(':checked'); // Checkbox durumunu kontrol et
+                    var entryTime = $(this).data('entry-time'); // Giriş saatini al (örneğin "HH:MM" formatında)
             
                     // Eğer personnelId veya checkoutDate eksikse hata ver
-                    if (!personnelId || !checkoutDate) {
-                        console.error('Eksik veri: personnelId veya checkoutDate tanımlı değil.');
+                    if (!personnelId || !checkoutDate || !entryTime) {
+                        console.error('Eksik veri: personnelId, checkoutDate veya entryTime tanımlı değil.');
                         return;
                     }
             
-                    // Eğer checkbox işaretliyse tarihi bir gün ileri al
-                    if (isDateAdjusted) {
+                    // Giriş ve çıkış saatlerini karşılaştır
+                    var [entryHour, entryMinute] = entryTime.split(':').map(Number); // Giriş saatini parçala
+                    var [checkoutHour, checkoutMinute] = checkoutTime.split(':').map(Number); // Çıkış saatini parçala
+            
+                    if (checkoutHour < entryHour || (checkoutHour === entryHour && checkoutMinute < entryMinute)) {
+                        // Eğer çıkış saati giriş saatinden küçükse, tarihi bir gün ileri al
                         var dateObj = new Date(checkoutDate);
                         dateObj.setDate(dateObj.getDate() + 1); // Tarihi bir gün ileri al
                         checkoutDate = dateObj.toISOString().split('T')[0]; // YYYY-MM-DD formatına dönüştür
@@ -530,7 +534,6 @@ while ($row = $resultMesaiSaatleri->fetch_assoc()) {
                     }
                 });
             });
-
 
             // Tarih aralığını oluşturma fonksiyonu
             function getDateRange(startDate, endDate) {

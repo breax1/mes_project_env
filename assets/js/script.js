@@ -112,18 +112,18 @@ document.addEventListener("DOMContentLoaded", function () {
     
                         const time = dateTimeParts[1].slice(0, 5); // Saat kısmı (HH:MM)
     
+                        // Giriş saatini backend'den gelen veriden al ve ayır
+                        const entryDateTimeParts = personnel.entry_time.split(' '); // ["2025-03-18", "07:30:00"]
+                        const entryTime = entryDateTimeParts[1].slice(0, 5); // Saat kısmı (HH:MM)
+    
                         // Personel satırını oluştur
                         const personnelRow = `
-                            <div class="checkout-row" data-id="${personnel.id}" data-date="${adjustedDate}">
+                            <div class="checkout-row" data-id="${personnel.id}" data-date="${adjustedDate}" data-entry-time="${entryTime}">
                                 <label for="checkoutTime_${personnel.id}">
                                     ${personnel.name}
                                     <small>(${adjustedDate})</small> <!-- Tarih bilgisi -->
                                 </label>
-                                <label>
-                                    <input type="checkbox" class="adjust-date-checkbox">
-                                </label>
                                 <input type="time" id="checkoutTime_${personnel.id}" name="checkoutTimes[${personnel.id}]" value="${time}" required>
-                                
                             </div>
                         `;
                         container.append(personnelRow);

@@ -8,7 +8,13 @@ header('Content-Type: application/json; charset=utf-8'); // UTF-8 karakter seti
 
 // Çıkış yapılan personellerin listesini al
 $query = "
-    SELECT p.id, p.personnel_main_name, g.time 
+    SELECT 
+        p.id, 
+        p.personnel_main_name, 
+        g.time AS checkout_time,
+        (SELECT MAX(time) 
+         FROM giris_cikis 
+         WHERE personnel_id = p.id AND islem = 'giris') AS last_entry_time
     FROM giris_cikis g
     JOIN personnel p ON g.personnel_id = p.id
     WHERE g.islem = 'cikis' AND TIME(g.time) = ?
@@ -24,7 +30,8 @@ while ($row = $result->fetch_assoc()) {
     $personnelList[] = [
         'id' => $row['id'], // Personelin ID'si
         'name' => $row['personnel_main_name'], // Personelin adı
-        'time' => $row['time'] // Çıkış saati
+        'time' => $row['checkout_time'], // Çıkış saati
+        'entry_time' => $row['last_entry_time'] // Son giriş saati
     ];
 }
 
