@@ -28,7 +28,12 @@ function calismaSuresi($girisZamani) {
     $giris = new DateTime($girisZamani);
     $simdi = new DateTime();
     $fark = $simdi->diff($giris);
-    return sprintf('%02d:%02d', $fark->h, $fark->i);
+
+    // Toplam saat ve dakikayı hesapla
+    $toplamSaat = ($fark->days * 24) + $fark->h; // Günleri saatlere çevir ve ekle
+    $toplamDakika = $fark->i;
+
+    return sprintf('%02d:%02d', $toplamSaat, $toplamDakika);
 }
 
 $calismayanPersoneller = [];
