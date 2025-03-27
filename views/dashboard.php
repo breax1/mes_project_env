@@ -326,6 +326,25 @@
             </div>
         </div>
 
+        <!-- Araç Verileri -->
+        <div class="vehicles">
+            <h2>Araç Verileri</h2>
+            <table id="vehicle-data-table">
+                <thead>
+                    <tr>
+                        <th>Plaka</th>
+                        <th>Hız</th>
+                        <th>Konum</th>
+                        <th>Motor Durumu</th>
+                        <th>Kontak</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dinamik olarak doldurulacak -->
+                </tbody>
+            </table>
+        </div>
+
         <!-- Materials -->
         <div class="materials">
             <h2>Malzeme Durumu</h2>
@@ -398,6 +417,42 @@
                     statusColor: "#28a745"
                 }
             ];
+
+            // Araç verilerini yükle
+            function loadVehicleData() {
+                $.ajax({
+                    url: '../controllers/get_vehicle_data.php', // API isteği için PHP dosyası
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        if (data && Array.isArray(data)) {
+                            const $tableBody = $('#vehicle-data-table tbody');
+                            $tableBody.empty(); // Önceki verileri temizle
+
+                            data.forEach(vehicle => {
+                                const row = `
+                                    <tr>
+                                        <td>${vehicle.plate}</td>
+                                        <td>${vehicle.speed} km/h</td>
+                                        <td>${vehicle.city}, ${vehicle.town}</td>
+                                        <td>${vehicle.engine === 'A' ? 'Aktif' : 'Pasif'}</td>
+                                        <td>${vehicle.ignition === 'A' ? 'Açık' : 'Kapalı'}</td>
+                                    </tr>
+                                `;
+                                $tableBody.append(row);
+                            });
+                        } else {
+                            alert('Araç verileri alınamadı.');
+                        }
+                    },
+                    error: function() {
+                        alert('API isteği başarısız oldu.');
+                    }
+                });
+            }
+
+            // Sayfa yüklendiğinde araç verilerini yükle
+            loadVehicleData();
 
             // Projeleri Dinamik Olarak Ekleme (jQuery ile)
             const $projectsContainer = $('#projects-container');

@@ -11,6 +11,7 @@ html, body {
 
 /* Arka plan rengi */
 body {
+    filter: invert(90%) hue-rotate(180deg);
     font-family: Arial, sans-serif;
     background: linear-gradient(135deg, #343e99, #0f1a7a, #030b50, #252525); /* Renkli arka plan */
     display: flex;

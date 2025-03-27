@@ -28,9 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function fetchNotifications() {
         fetch('../includes/get_notifications.php')
             .then((response) => response.json())
-            .then((data) => {
-                console.log(data); // Gelen veriyi kontrol etmek için konsola yazdırın
-    
+            .then((data) => {    
                 // Eğer yeni bildirim varsa ses çal ve masaüstü bildirimi göster
                 const newNotifications = data.unreadCount > parseInt(notificationCount.textContent);
                 if (newNotifications && !initialLoad) {

@@ -474,7 +474,11 @@ while ($row = $resultMesaiSaatleri->fetch_assoc()) {
                 event.preventDefault(); // Formun varsayılan gönderimini engelle
             
                 // Form verilerini manuel olarak oluştur
-                var formData = {};
+                var formData = {
+                    checkoutTimes: {}, // Çıkış saatlerini tutacak
+                    dataDates: {} // data-date değerlerini tutacak
+                };
+            
                 $('.checkout-row').each(function() {
                     var personnelId = $(this).data('id'); // data-id'den personel ID'sini al
                     var checkoutDate = $(this).data('date'); // data-date'den tarihi al
@@ -501,14 +505,15 @@ while ($row = $resultMesaiSaatleri->fetch_assoc()) {
                     // Sadece saat 05:00:00 dışında bir değer girilmişse ekle
                     if (checkoutTime !== '05:00') {
                         var datetime = checkoutDate + ' ' + checkoutTime + ':00'; // DATETIME formatına dönüştür (YYYY-MM-DD HH:MM:SS)
-                        formData[personnelId] = datetime; // Form verisine ekle
+                        formData.checkoutTimes[personnelId] = datetime; // Çıkış saatini ekle
+                        formData.dataDates[personnelId] = checkoutDate; // data-date değerini ekle
                     }
                 });
             
                 console.log('Gönderilen Veriler:', formData); // Gönderilen verileri kontrol edin
             
                 // Eğer formData boşsa işlem yapma
-                if (Object.keys(formData).length === 0) {
+                if (Object.keys(formData.checkoutTimes).length === 0) {
                     showNotification('Değişiklik yapılmadı.', 'info');
                     return;
                 }
@@ -517,7 +522,7 @@ while ($row = $resultMesaiSaatleri->fetch_assoc()) {
                 $.ajax({
                     url: '../controllers/update_checkout_time.php', // Backend endpoint
                     method: 'POST',
-                    data: { checkoutTimes: formData }, // Verileri gönder
+                    data: formData, // Verileri gönder
                     success: function(response) {
                         console.log('Dönen Yanıt:', response); // Yanıtı kontrol edin
                         var data = JSON.parse(response);
