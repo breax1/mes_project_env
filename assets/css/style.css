@@ -11,7 +11,7 @@ html, body {
 
 /* Arka plan rengi */
 body {
-    filter: invert(90%) hue-rotate(180deg);
+    /*filter: invert(90%) hue-rotate(180deg);*/
     font-family: Arial, sans-serif;
     background: linear-gradient(135deg, #343e99, #0f1a7a, #030b50, #252525); /* Renkli arka plan */
     display: flex;
@@ -1164,3 +1164,567 @@ canvas {
     flex-wrap: wrap;
 }
 
+/* stock sayfasi */
+/* Genel Ayarlar */
+
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.col_left_stock {
+    width: 50%; /* Sol kolonun genişliği */
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+.col_right_stock {
+    width: 49%; /* Sol kolonun genişliği */
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+/* Başlıklar */
+h3 {
+    margin-top: 0;
+    font-size: 18px;
+    color: #555;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 5px;
+}
+
+    /* Filtreleme Bölümü */
+.filter-section {
+    margin-bottom: 20px;
+}
+
+.filter-inputs {
+    display: flex; /* Flexbox düzeni */
+    flex-wrap: wrap; /* Gerekirse bir sonraki satıra geç */
+    gap: 10px; /* Elemanlar arasında boşluk */
+    align-items: center; /* Dikey hizalama */
+}
+
+.filter-inputs label {
+    font-size: 14px;
+    font-weight: bold;
+    margin-right: 5px; /* Label ile input arasında boşluk */
+}
+
+.filter-inputs input,
+.filter-inputs select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    flex: 1; /* Elemanların genişliğini eşit yap */
+}
+
+.filter-tbl {
+    max-height: 500px;
+    overflow-y: auto; /* Dikey kaydırma */
+    min-height: 500px;
+    cursor: pointer;
+}
+
+#filterTable tbody td {
+    text-align: center; /* Yatayda ortala */
+    vertical-align: middle; /* Dikeyde ortala */
+}
+
+#filterTable thead th {
+    text-align: center; /* Yatayda ortala */
+    vertical-align: middle; /* Dikeyde ortala */
+}
+
+#filterTable tbody tr.selected {
+    background-color: #50adeb80; /* Açık mavi arka plan */
+}
+
+
+
+/* Malzeme Çıkartma Bölümü */
+.material-out-section {
+    margin-bottom: 20px;
+}
+
+.material-out-section h3 {
+    margin-bottom: 10px;
+}
+
+.material-out-inputs {
+    display: flex; /* Flexbox düzeni */
+    flex-wrap: wrap; /* Gerekirse bir sonraki satıra geç */
+    gap: 10px; /* Elemanlar arasında boşluk */
+    align-items: center; /* Dikey hizalama */
+}
+
+.material-out-inputs label {
+    font-size: 14px;
+    font-weight: bold;
+    margin-right: 5px; /* Label ile input arasında boşluk */
+}
+
+.material-out-inputs input,
+.material-out-inputs select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    flex: 1; /* Elemanların genişliğini eşit yap */
+    min-width: 150px; /* Minimum genişlik */
+}
+
+.material-out-inputs button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    flex: 0 0 auto; /* Buton genişliği sabit kalır */
+}
+
+.material-out-inputs button:hover {
+    background-color: #0056b3;
+}
+
+/* Logs Tablosu */
+.logs-section {
+    margin-bottom: 20px;
+}
+.logs-table {
+    max-height: calc(100vh - 740px);
+    overflow-y: auto; /* Dikey kaydırma */
+}
+.logs-section table {
+    margin-top: 10px;
+    
+}
+#logsTable tbody td {
+    text-align: center; /* Yatayda ortala */
+    vertical-align: middle; /* Dikeyde ortala */
+}
+#logsTable thead th {
+    text-align: center; /* Yatayda ortala */
+    vertical-align: middle; /* Dikeyde ortala */
+}
+
+.charts-section {
+    display: flex; /* Elemanları yatay hizala */
+    flex-wrap: wrap; /* Gerekirse bir sonraki satıra geç */
+    gap: 20px; /* Grafikler arasında boşluk */
+    justify-content: space-between; /* Grafikler arasında boşluk bırak */
+    align-items: flex-start; /* Elemanları üstte hizala */
+}
+
+.charts-section h3 {
+    width: 100%; /* Başlık tam genişlikte olsun */
+    text-align: left; /* Başlığı ortala */
+    margin-bottom: 20px; /* Başlık ile grafikler arasında boşluk */
+}
+
+.charts-section .chart {
+    flex: 1; /* Grafiklerin eşit genişlikte olmasını sağla */
+    max-width: 28%; /* Grafiklerin maksimum genişliği %48 */
+    height: 100px !important; /* Grafik yüksekliği */
+    border: 1px solid #ddd; /* Kenarlık */
+    display: flex;
+    justify-content: center; /* Yatayda ortala */
+    align-items: center; /* Dikeyde ortala */
+}
+
+canvas {
+    flex: 1; /* Grafiklerin eşit genişlikte olmasını sağla */
+    height: 200px ; /* Yüksekliği 200px yap */
+    max-height: 300px;
+}
+
+/* Proje Malzemeleri */
+.project-materials-section {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px dashed #ccc;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 14px;
+    min-height: 650px;
+    max-height: 650px;
+    overflow-y: auto; /* Dikey kaydırma */
+}
+
+/* Butonlar */
+.buttons-section {
+    display: flex;
+    margin-top: auto;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px;
+    position: sticky;
+    bottom: 0;
+    z-index: 100;
+}
+
+.buttons-section button {
+    flex: 1;
+    border: none;
+    padding: 10px 15px;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Popup Arka Plan */
+.popup-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Popup İçerik */
+.popup-content {
+    position: relative; /* İçerik içinde butonu konumlandırmak için gerekli */
+    background-color: rgba(0, 0, 0, 0.65); /* %80 şeffaflık */
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+/* Input ve Butonlar */
+.input-with-button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.popup-content label {
+    display: block;
+    margin-top: 10px;
+    text-align: left;
+    color: white;
+}
+.popup-overlay h3 {
+    color: white;
+}
+
+.popup-content input,
+.popup-content select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.popup-content button {
+    padding: 10px 15px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+
+.popup-content button:hover {
+    background-color: #0056b3;
+}
+/* Close Button */
+.close-button {
+    position: absolute; /* Butonu popup içinde konumlandır */
+    top: 0px; /* Popup'ın üstünden 10px boşluk bırak */
+    right: 0px; /* Popup'ın sağından 10px boşluk bırak */
+    background: none !important; /* Arka planı kaldır */ 
+    border: none; /* Kenarlık kaldır */
+    font-size: 24px !important; /* Yazı boyutunu büyüt */
+    font-weight: bold; /* Yazıyı kalın yap */
+    color: #333; /* Yazı rengi */
+    cursor: pointer; /* İmleci el simgesine çevir */
+}
+
+.close-button:hover {
+    color: #ff0000 !important; /* Üzerine gelindiğinde kırmızı renk */
+}
+
+.project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center ;
+    background-color: #f5f5f5 ;
+    padding: 10px 15px ;
+    border: 1px solid #ddd ;
+    border-radius: 5px ;
+    margin-bottom: 5px ;
+    cursor: pointer ;
+}
+
+.project-name {
+    font-size: 16px ;
+    font-weight: bold ;
+    color: #333 ;
+    flex-grow: 1;
+}
+
+.toggle-materials {
+    background: none !important;
+    border: none !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+    color: #007bff !important;
+    cursor: pointer !important;
+    padding: 0 !important;
+    margin-left: auto !important; /* Sağ tarafa yasla */
+}
+
+.toggle-materials:hover {
+    color: #0056b3 !important;
+}
+
+.materials {
+    display: none;
+    border: 1px solid #ddd;
+    border-top: none; /* Üst kenarlığı kaldırarak başlıkla birleşik görünmesini sağlar */
+    margin-top: 0; /* Üst boşluğu kaldır */
+    padding: 10px;
+    background-color: #ffffff; /* Malzeme listesinin arka plan rengi */
+}
+
+.materials table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+}
+
+.materials th, .materials td {
+    border: 1px solid #ddd !important;
+    padding: 8px !important;
+    text-align: left !important;
+}
+
+.materials th {
+    background-color: #f9f9f9 !important;
+    font-weight: bold !important;
+}
+
+.add-button {
+    margin-left: 10px !important;
+    padding: 5px 10px !important;
+    font-size: 14px !important;
+    background-color: #007bff !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 3px !important;
+    cursor: pointer !important;
+}
+
+.add-button:hover {
+    background-color: #0056b3 !important;
+}
+
+.inline-popup {
+    display: none ;
+    margin-left: 306px !important;
+    margin-top: 60px !important;
+    position: absolute !important;
+    background-color: rgba(0, 0, 0, 0.65); /* %80 şeffaflık */
+    border-radius: 5px ;
+    padding: 10px !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000 ;
+}
+
+.inline-popup input {
+    width: 200px !important;
+    padding: 5px !important;
+    margin-bottom: 10px !important;
+    border: 1px solid #ccc !important;
+    border-radius: 3px !important;
+}
+
+.inline-popup button {
+    padding: 5px 10px !important;
+    background-color: #007bff !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 3px !important;
+    cursor: pointer !important;
+}
+
+.inline-popup button:hover {
+    background-color: #0056b3;
+}
+
+/* Purchase History Popup Arka Plan */
+#purchaseHistoryPopup {
+    display: none; /* Varsayılan olarak gizli */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Arka plan karartması */
+    z-index: 9999; /* Üstte görünmesi için */
+    justify-content: center !important; /* Yatayda ortala */
+    align-items: center !important; /* Dikeyde ortala */
+}
+
+/* Purchase History Popup İçerik */
+#purchaseHistoryPopup .popup-content {
+    background: #fff; /* Beyaz arka plan */
+    padding: 20px;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 1500px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Hafif gölge */
+    position: relative; /* Kapatma butonunu konumlandırmak için */
+    text-align: center !important; /* İçeriği ortala */
+    transform: translate(50%, 50%); /* Ortalamak için */
+}
+
+/* Popup Başlık */
+#purchaseHistoryPopup h3 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333; /* Başlık rengi */
+}
+
+/* Popup Tablo */
+#purchaseHistoryPopup table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+#purchaseHistoryPopup th, 
+#purchaseHistoryPopup td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd; /* Hücre kenarlıkları */
+}
+
+#purchaseHistoryPopup th {
+    background-color: #007bff; /* Başlık arka plan rengi */
+    color: #fff; /* Başlık yazı rengi */
+    font-weight: bold;
+}
+
+#purchaseHistoryPopup tr:nth-child(even) {
+    background-color: #f9f9f9; /* Alternatif satır rengi */
+}
+
+#purchaseHistoryPopup tr:hover {
+    background-color: #f1f1f1; /* Hover rengi */
+}
+
+/* Kapatma Butonu */
+#purchaseHistoryPopup .close-button {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+}
+
+#purchaseHistoryPopup .close-button:hover {
+    color: #ff0000; /* Hover durumunda kırmızı renk */
+}
+
+.date-filter {
+    margin-bottom: 20px !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 10px !important;
+}
+
+.date-filter label {
+    font-weight: bold !important;
+    color: #333 !important;
+}
+
+.date-filter input {
+    padding: 5px !important;
+    border: 1px solid #ccc !important;
+    border-radius: 4px !important;
+}
+
+.date-filter button {
+    padding: 5px 10px !important;
+    background-color: #007bff !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 4px !important;
+    cursor: pointer!important ;
+}
+
+.date-filter button:hover {
+    background-color: #0056b3 !important;
+}
+
+/* sag sol bolumler */
+.popup-body {
+    display: flex;
+    gap: 20px; /* sol sag bolum arasina bosluk */
+}
+
+.left-section, .right-section {
+    flex: 1; /* esit genislik */
+    overflow-y: auto; /* tasma olursa kaydirma cubugu */
+}
+
+.left-section {
+    border-right: 1px solid #ddd; /* sag bolumu ayirmak icin cizgi*/
+    padding-right: 10px;
+}
+
+.right-section {
+    padding-left: 10px;
+}
+
+#stockLogsTable, #purchaseHistoryTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#stockLogsTable th, #stockLogsTable td,
+#purchaseHistoryTable th, #purchaseHistoryTable td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+#stockLogsTable th, #purchaseHistoryTable th {
+    font-weight: bold;
+}
+
+#stockUsesTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+#stockUsesTable th, #stockUsesTable td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+#stockUsesTable th {
+    font-weight: bold;
+}

@@ -34,6 +34,16 @@ Bu proje, metales sirket yönetimi için geliştirilmiş kapsamlı bir web uygul
   - Harcama analizi
   - Maliyet raporları
 
+- **Personel Takip Sistemi**
+  - ESP32 tabanlı özel üretim personel takip cihazı
+  - RFID/NFC kart ile personel giriş-çıkış takibi
+  - Gerçek zamanlı personel konum takibi
+  - Geçmiş giriş-çıkış kayıtları
+  - Personel vardiya takibi
+  - Mesai ve fazla mesai hesaplamaları
+  - Personel devam durumu raporları
+  - Mobil uygulama entegrasyonu
+
 ## 🛠️ Teknolojiler
 
 - PHP
@@ -42,6 +52,10 @@ Bu proje, metales sirket yönetimi için geliştirilmiş kapsamlı bir web uygul
 - Chart.js
 - HTML5
 - CSS3
+- ESP32
+- RFID/NFC
+- MQTT Protokolü
+- WebSocket
 
 ## 📁 Proje Yapısı
 
@@ -70,6 +84,9 @@ Bu proje, metales sirket yönetimi için geliştirilmiş kapsamlı bir web uygul
 - Ekipman durum takibi
 - Maliyet analizi
 - Malzeme stok takibi
+- Personel giriş-çıkış istatistikleri
+- Vardiya bazlı personel dağılımı
+- Mesai ve fazla mesai raporları
 
 ## 🔐 Güvenlik
 

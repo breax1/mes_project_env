@@ -9,9 +9,10 @@ if (isset($_GET['kesif_id'])) {
     $kesifId = $_GET['kesif_id'];
 
     // Keşif detaylarını çekmek için sorgu
-    $query = "SELECT krm.id, krm.raw_material_name, krm.unit, krm.amount, u.unit_name 
+    $query = "SELECT krm.id, krm.raw_material_id, krm.unit, krm.amount, u.unit_name, s.urun_adi 
               FROM kesif_raw_materials krm 
               JOIN units u ON krm.unit = u.id 
+              JOIN stock s ON krm.raw_material_id = s.id 
               WHERE krm.kesif_id = ?";
     $stmt = $baglanti->prepare($query);
     $stmt->bind_param("i", $kesifId);
@@ -30,7 +31,7 @@ if (isset($_GET['kesif_id'])) {
         $lastPrice = $price ? $price['price'] : '';
 
         echo "<tr data-id='{$row['id']}'>
-                <td class='raw-material'>{$row['raw_material_name']}</td>
+                <td class='raw-material'>{$row['urun_adi']}</td>
                 <td class='unit'>{$row['unit_name']}</td>
                 <td class='amount'>{$row['amount']}</td>
                 <td class='price'><input type='number' step='0.01' value='{$lastPrice}'></td>

@@ -24,7 +24,7 @@ while ($taslak = $resultTaslaklar->fetch_assoc()) {
             <td>" . date('Y-m-d', strtotime($taslak['proposal_date'] . ' + ' . $taslak['validity_period'] . ' days')) . "</td>
             <td>{$taslak['amount']}</td>
             <td>{$taslak['author']}</td>
-            <td>" . ($taslak['status'] == 0 ? 'Taslak' : 'Tamamlandı') . "</td>
+            <td>" . ($taslak['status'] == 0 ? 'Bekliyor' : 'Tamamlandı') . "</td>
           </tr>";
 }
 ?>

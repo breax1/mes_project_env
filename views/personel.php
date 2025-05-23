@@ -98,6 +98,9 @@ while ($row = $resultMesaiSaatleri->fetch_assoc()) {
                     }
                     $('#calismayanPersoneller tbody').html(calismayanHtml);
 
+                    $('h2:contains("Çalışmayan Personeller")').text(`Çalışmayan Personeller (${data.calismayanSayisi})`);
+                    $('h2:contains("Çalışan Personeller")').text(`Çalışan Personeller (${data.calisanSayisi})`);
+
                     var calisanHtml = '';
                     for (var i = 0; i < calisanPersoneller.length; i++) {
                         calisanHtml += '<tr data-id="' + calisanPersoneller[i].id + '">' +
@@ -360,7 +363,6 @@ while ($row = $resultMesaiSaatleri->fetch_assoc()) {
                             if ($('#submitButton').text() === 'Kaydet') {
                                 logAction('Personel eklendi: ' + name + ' ' + surname);
                             } else if ($('#submitButton').text() === 'Güncelle') {
-                                // originalData boşsa hata mesajı göster
                                 if (Object.keys(originalData).length === 0) {
                                     console.error('originalData boş, güncelleme kontrolü yapılamıyor.');
                                     showNotification('Güncelleme sırasında bir hata oluştu: Eski veriler alınamadı.', 'error');

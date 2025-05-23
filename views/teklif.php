@@ -464,23 +464,76 @@ $resultTaslaklar = $baglanti->query($queryTaslaklar);
                 </thead>
                 <tbody id="draftsTableBody">
                     <?php while ($taslak = $resultTaslaklar->fetch_assoc()) { ?>
-                        <tr>
+                        <tr class="draft-row" data-id="<?php echo $taslak['id']; ?>">
                             <td><?php echo $taslak['project_name']; ?></td>
                             <td><?php echo $taslak['customer_name']; ?></td>
                             <td><?php echo $taslak['proposal_date']; ?></td>
                             <td><?php echo date('Y-m-d', strtotime($taslak['proposal_date'] . ' + ' . $taslak['validity_period'] . ' days')); ?></td>
                             <td><?php echo $taslak['amount']; ?></td>
                             <td><?php echo $taslak['author']; ?></td>
-                            <td><?php echo $taslak['status'] == 0 ? 'Taslak' : 'Tamamlandı'; ?></td>
+                            <td><?php echo $taslak['status'] == 1 ? 'Taslak' : ($taslak['status'] == 2 ? 'Onaylandı' : 'Reddedildi'); ?></td>
                         </tr>
                     <?php } ?>
                 </tbody>
             </table>
         </div>
+        <div id="approvalButtons" style="display: none; margin-top: 20px;">
+            <button id="approveButton" style="background-color: #4CAF50; color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer;">Onayla</button>
+            <button id="rejectButton" style="background-color: #F44336; color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer;">Reddet</button>
+        </div>
     </div>
 
     <script>
         $(document).ready(function() {
+            let selectedProposalId = null;
+
+            // Teklif satırına tıklama
+            $('#draftsTableBody').on('click', '.draft-row', function () {
+                $('#draftsTableBody .draft-row').removeClass('selected');
+                $(this).addClass('selected');
+                selectedProposalId = $(this).data('id');
+                $('#approvalButtons').show(); // Onay ve red butonlarını göster
+            });
+
+            // Onay butonuna tıklama
+            $('#approveButton').on('click', function () {
+                if (!selectedProposalId) {
+                    alert('Lütfen bir teklif seçin.');
+                    return;
+                }
+                handleProposalAction(selectedProposalId, 'approve');
+            });
+
+            // Red butonuna tıklama
+            $('#rejectButton').on('click', function () {
+                if (!selectedProposalId) {
+                    alert('Lütfen bir teklif seçin.');
+                    return;
+                }
+                handleProposalAction(selectedProposalId, 'reject');
+            });
+
+            // Teklif onaylama veya reddetme işlemi
+            function handleProposalAction(proposalId, action) {
+                $.ajax({
+                    url: '../controllers/handle_proposal.php',
+                    method: 'POST',
+                    data: { proposal_id: proposalId, action: action },
+                    success: function (response) {
+                        const data = JSON.parse(response);
+                        if (data.status === 'success') {
+                            alert(data.message);
+                            location.reload(); // Sayfayı yenile
+                        } else {
+                            alert(data.message);
+                        }
+                    },
+                    error: function () {
+                        alert('Bir hata oluştu.');
+                    }
+                });
+            }
+
             // Proje seçildiğinde detayları getir
             $('#projectList').on('click', '.project-button', function() {
                 var projectId = $(this).data('id');

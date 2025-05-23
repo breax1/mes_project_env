@@ -74,7 +74,7 @@ if(isset($_SESSION['username'])) {
                     <?php if (array_intersect($roles, ['admin', 'engineer'])): ?>
                         <button href="#" class="menu-link" data-page="views/kesif.php">KESIF</button>
                     <?php endif; ?>
-                    <?php if (array_intersect($roles, ['superadmin'])): ?>
+                    <?php if (array_intersect($roles, ['admin'])): ?>
                         <button href="#" class="menu-link" data-page="views/approval.php">KESIF ONAY</button>
                     <?php endif; ?>
                     <?php if (array_intersect($roles, ['admin', 'warehouse'])): ?>
@@ -87,7 +87,7 @@ if(isset($_SESSION['username'])) {
                         <button href="#" class="menu-link" data-page="views/ucuncu_parti.php">UCUNCU PARTI</button>
                     <?php endif; ?>
                     <?php if (array_intersect($roles, ['admin', 'teklif_detay'])): ?>
-                        <button href="#" class="menu-link" data-page="views/teklif_detay.php">TEKLIF DETAY</button>
+                        <button href="#" class="menu-link" data-page="views/stock.php">TEKLIF DETAY</button>
                     <?php endif; ?>
                     <?php if (array_intersect($roles, ['admin', 'muhasebe'])): ?>
                         <button href="#" class="menu-link" data-page="views/personel.php">PERSONEL</button>

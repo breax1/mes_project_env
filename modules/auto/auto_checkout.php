@@ -7,7 +7,7 @@ include("../../includes/db_config.php");
 date_default_timezone_set('Europe/Istanbul'); // Saat dilimini ayarla
 
 // Koruma: Doğru API anahtarı kontrolü
-$validKey = "0Co6PeK2hN"; // Güvenli bir anahtar belirleyin
+$validKey = "0CoXXXK2hN"; // Güvenli bir anahtar belirleyin
 if (!isset($_GET['key']) || $_GET['key'] !== $validKey) {
     http_response_code(403); // Yetkisiz erişim
     echo json_encode(["status" => "error", "message" => "Yetkisiz erişim."]);

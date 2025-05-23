@@ -81,12 +81,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Ham madde bilgilerini kaydet
         if (!empty($_POST['raw_materials'])) {
             for ($i = 0; $i < count($_POST['raw_materials']); $i++) {
-                $rawMaterial = $_POST['raw_materials'][$i];
+                $rawMaterialId = $_POST['raw_materials'][$i]; // raw_material_id olarak al
                 $unit = $_POST['units'][$i];
                 $quantity = $_POST['quantities'][$i];
-                $queryRawMaterial = "INSERT INTO kesif_raw_materials (kesif_id, raw_material_name, unit, amount) VALUES (?, ?, ?, ?)";
+                $queryRawMaterial = "INSERT INTO kesif_raw_materials (kesif_id, raw_material_id, unit, amount) VALUES (?, ?, ?, ?)";
                 $stmtRawMaterial = $baglanti->prepare($queryRawMaterial);
-                $stmtRawMaterial->bind_param("isid", $kesifId, $rawMaterial, $unit, $quantity);
+                $stmtRawMaterial->bind_param("iiid", $kesifId, $rawMaterialId, $unit, $quantity);
                 $stmtRawMaterial->execute();
                 $stmtRawMaterial->close();
             }

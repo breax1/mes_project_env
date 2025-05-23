@@ -301,7 +301,8 @@ $resultUnits = $baglanti->query($queryUnits);
                 <div id="raw_materials_container">
                     <div class="raw_material_row">
                         <span class="row_number">1</span>
-                        <input list="stock_list" name="raw_materials[]" placeholder="Ham madde seçin veya girin">
+                        <input list="stock_list" name="raw_material_names[]" placeholder="Ham madde seçin veya girin" oninput="updateRawMaterialId(this)">
+                        <input type="hidden" name="raw_materials[]" value=""> <!-- ID değeri buraya yazılacak -->
                         <datalist id="stock_list"></datalist>
                         <select name="units[]">
                             <?php while ($unit = $resultUnits->fetch_assoc()) { ?>
@@ -319,6 +320,13 @@ $resultUnits = $baglanti->query($queryUnits);
     </div>
 
     <script>
+        
+        function updateRawMaterialId(inputElement) {
+                    var selectedOption = $('#stock_list option[value="' + inputElement.value + '"]');
+                    var rawMaterialId = selectedOption.data('id') || ''; // Eğer ID yoksa boş bırak
+                    $(inputElement).siblings('input[type="hidden"]').val(rawMaterialId); // Hidden input'a ID'yi yaz
+        }
+        
         $(document).ready(function() {
             // Proje seçildiğinde proje konumunu güncelle
             $('#project_id').on('change', function() {
@@ -402,7 +410,8 @@ $resultUnits = $baglanti->query($queryUnits);
                 var newRow = `
                     <div class="raw_material_row">
                         <span class="row_number">${rowNumber}</span>
-                        <input list="stock_list" name="raw_materials[]" placeholder="Ham madde seçin veya girin">
+                        <input list="stock_list" name="raw_material_names[]" placeholder="Ham madde seçin veya girin" oninput="updateRawMaterialId(this)">
+                        <input type="hidden" name="raw_materials[]" value="">
                         <select name="units[]">
                             <?php
                             $resultUnits->data_seek(0); // Birim listesini yeniden başlat
@@ -436,7 +445,6 @@ $resultUnits = $baglanti->query($queryUnits);
                 $('#equipment_container').append(newRow);
             });
 
-            // Stok listesini doldur
             function loadStockList() {
                 $.ajax({
                     url: '../controllers/get_stock_list.php',
@@ -446,7 +454,7 @@ $resultUnits = $baglanti->query($queryUnits);
                         var datalist = $('#stock_list');
                         datalist.empty();
                         stockList.forEach(function(item) {
-                            datalist.append('<option value="' + item.urun_adi + ' (' + item.urun_kodu + ')"></option>');
+                            datalist.append('<option value="' + item.urun_adi + ' (' + item.urun_kodu + ')" data-id="' + item.id + '"></option>');
                         });
                     },
                     error: function() {
@@ -457,6 +465,7 @@ $resultUnits = $baglanti->query($queryUnits);
 
             // Sayfa yüklendiğinde stok listesini doldur
             loadStockList();
+
 
             // Formu AJAX ile gönder
             $('#kesifForm').on('submit', function(e) {
@@ -496,6 +505,7 @@ $resultUnits = $baglanti->query($queryUnits);
                         showNotification('Keşif kaydedilirken bir hata oluştu.', 'error');
                     }
                 });
+
             });
         });
     </script>

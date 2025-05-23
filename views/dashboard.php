@@ -241,6 +241,10 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        .vehicles {
+            margin-bottom: 30px; /* Alt boşluk ekler */
+        }
     </style>
 </head>
 <body>
@@ -248,6 +252,23 @@
         <!-- Header -->
         <div class="dashboard-header">
             <h1>Metal & Çelik Proje Dashboard</h1>
+        </div>
+
+        <div class="vehicles">
+            <h2>Araç Verileri</h2>
+            <table id="vehicle-data-table">
+                <thead>
+                    <tr>
+                        <th>Plaka</th>
+                        <th>Sürücü</th>
+                        <th>Konum</th>
+                        <th>Durum</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dinamik olarak doldurulacak -->
+                </tbody>
+            </table>
         </div>
 
         <!-- Projects -->
@@ -326,24 +347,7 @@
             </div>
         </div>
 
-        <!-- Araç Verileri -->
-        <div class="vehicles">
-            <h2>Araç Verileri</h2>
-            <table id="vehicle-data-table">
-                <thead>
-                    <tr>
-                        <th>Plaka</th>
-                        <th>Hız</th>
-                        <th>Konum</th>
-                        <th>Motor Durumu</th>
-                        <th>Kontak</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Dinamik olarak doldurulacak -->
-                </tbody>
-            </table>
-        </div>
+        
 
         <!-- Materials -->
         <div class="materials">
@@ -418,41 +422,74 @@
                 }
             ];
 
-            // Araç verilerini yükle
-            function loadVehicleData() {
-                $.ajax({
-                    url: '../controllers/get_vehicle_data.php', // API isteği için PHP dosyası
-                    method: 'GET',
-                    dataType: 'json',
-                    success: function(data) {
-                        if (data && Array.isArray(data)) {
-                            const $tableBody = $('#vehicle-data-table tbody');
-                            $tableBody.empty(); // Önceki verileri temizle
-
-                            data.forEach(vehicle => {
-                                const row = `
-                                    <tr>
-                                        <td>${vehicle.plate}</td>
-                                        <td>${vehicle.speed} km/h</td>
-                                        <td>${vehicle.city}, ${vehicle.town}</td>
-                                        <td>${vehicle.engine === 'A' ? 'Aktif' : 'Pasif'}</td>
-                                        <td>${vehicle.ignition === 'A' ? 'Açık' : 'Kapalı'}</td>
-                                    </tr>
-                                `;
-                                $tableBody.append(row);
-                            });
-                        } else {
-                            alert('Araç verileri alınamadı.');
-                        }
-                    },
-                    error: function() {
-                        alert('API isteği başarısız oldu.');
+            async function loadVehicleData() {
+                try {
+                    const response = await fetch('../controllers/get_vehicle_data.php');
+                    const data = await response.json();
+                    const tbody = document.querySelector("#vehicle-data-table tbody");
+                    tbody.innerHTML = '';
+            
+                    if (!data.success || !Array.isArray(data.result)) {
+                        tbody.innerHTML = '<tr><td colspan="4">Veri alınamadı</td></tr>';
+                        return;
                     }
-                });
+            
+                    data.result.forEach(vehicle => {
+                        const row = document.createElement('tr');
+            
+                        // Plaka
+                        const plate = vehicle.plate ?? '-';
+            
+                        // Sürücü Adı ve Soyadı
+                        const driverName = vehicle.driverFirstName && vehicle.driverLastName
+                            ? `${vehicle.driverFirstName} ${vehicle.driverLastName}`
+                            : '-';
+            
+                        // Konum
+                        let location = `${vehicle.quarter ?? ''} ${vehicle.way ?? ''}, ${vehicle.town ?? ''} / ${vehicle.city ?? ''}`.trim();
+            
+                        // Eğer adres "75. Yıl OSB Mh. 6. Cd. Nil Yemek Sanayi , Odunpazarı, Eskişehir" ise "METALES MAKINE" yaz
+                        if (
+                            vehicle.quarter === "75. Yıl OSB Mh." &&
+                            vehicle.way === "6. Cd.  Nil Yemek Sanayi " &&
+                            vehicle.town === "Odunpazarı" &&
+                            vehicle.city === "Eskişehir"
+                        ) {
+                            location = "METALES MAKINE";
+                        }
+            
+                        // Durum
+                        const state = vehicle.state === 'STATE_MOVING' ? 'HAREKET HALİNDE' : 'DURUYOR';
+            
+                        // Durum rengi
+                        const stateColor = vehicle.state === 'STATE_MOVING' ? '#28a745' : '#dc3545'; // Açık yeşil: hareket halinde, kırmızı: duruyor
+            
+                        row.innerHTML = `
+                            <td>${plate}</td>
+                            <td>${driverName}</td>
+                            <td>${location}</td>
+                            <td style="color: ${stateColor}; font-weight: bold;">${state}</td>
+                        `;
+            
+                        tbody.appendChild(row);
+                    });
+                } catch (error) {
+                    console.error('Veri yükleme hatası:', error);
+                    const tbody = document.querySelector("#vehicle-data-table tbody");
+                    tbody.innerHTML = '<tr><td colspan="4">Veri yüklenirken bir hata oluştu</td></tr>';
+                }
             }
-
+            
             // Sayfa yüklendiğinde araç verilerini yükle
             loadVehicleData();
+
+            // Araç verilerini her 10 saniyede bir güncelle
+            setInterval(() => {
+                loadVehicleData();
+            }, 25000); // 10000 milisaniye = 10 saniye
+
+            
+            
 
             // Projeleri Dinamik Olarak Ekleme (jQuery ile)
             const $projectsContainer = $('#projects-container');

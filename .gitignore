@@ -1,0 +1,37 @@
+# Çevre değişkenleri
+.env
+
+# IDE ve editör dosyaları
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Log dosyaları
+logs/
+*.log
+
+# Geçici dosyalar
+*.tmp
+*.temp
+*.swp
+*~
+
+# Yüklenen dosyalar
+uploads/
+
+# Composer
+vendor/
+composer.lock
+
+# Node modules
+node_modules/
+package-lock.json
+
+# Derleme çıktıları
+dist/
+build/
+
+# Sistem dosyaları
+.DS_Store
+Thumbs.db 

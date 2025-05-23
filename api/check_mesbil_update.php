@@ -10,7 +10,7 @@ include("../includes/db_config.php");
 try {
     // Sorguyu çalıştır
     $sql = "SELECT value FROM controllers WHERE type = ?";
-    $stmt = $conn->prepare($sql); // $conn, db_config.php'den gelen mysqli bağlantısı
+    $stmt = $baglanti->prepare($sql); // $baglanti, db_config.php'den gelen mysqli bağlantısı
     $type = 'mesbil_data';
     $stmt->bind_param("s", $type); // "s" string türünde parametre
     $stmt->execute();

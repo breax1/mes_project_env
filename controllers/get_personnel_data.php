@@ -77,6 +77,8 @@ while ($log = $resultLogs->fetch_assoc()) {
 echo json_encode([
     'calismayanPersoneller' => $calismayanPersoneller,
     'calisanPersoneller' => $calisanPersoneller,
-    'logs' => $logs
+    'logs' => $logs,
+    'calismayanSayisi' => count($calismayanPersoneller),
+    'calisanSayisi' => count($calisanPersoneller)
 ]);
 ?>

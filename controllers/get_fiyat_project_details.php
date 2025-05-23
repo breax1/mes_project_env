@@ -22,7 +22,10 @@ if (isset($_GET['project_id'])) {
     $kesif = $resultKesif->fetch_assoc();
 
     // Hammaddeleri çekmek için sorgu
-    $queryRawMaterials = "SELECT * FROM kesif_raw_materials WHERE kesif_id = ?";
+    $queryRawMaterials = "SELECT krm.*, s.urun_adi 
+                          FROM kesif_raw_materials krm 
+                          JOIN stock s ON krm.raw_material_id = s.id 
+                          WHERE krm.kesif_id = ?";
     $stmtRawMaterials = $baglanti->prepare($queryRawMaterials);
     $stmtRawMaterials->bind_param("i", $kesif['id']);
     $stmtRawMaterials->execute();
@@ -88,7 +91,7 @@ if (isset($_GET['project_id'])) {
         $totalPrice = $rawMaterial['amount'] * $lastPrice;
 
         echo "<tr>";
-        echo "<td>" . $rawMaterial['raw_material_name'] . "</td>";
+        echo "<td>" . $rawMaterial['urun_adi'] . "</td>"; // raw_material_id yerine urun_adi yazdırılıyor
         echo "<td>" . $unit['unit_name'] . "</td>";
         echo "<td>" . $rawMaterial['amount'] . "</td>";
         echo "<td>" . $lastPrice . "</td>";

@@ -1,7 +1,7 @@
 <?php
 include("../includes/db_config.php");
 
-$query = "SELECT urun_adi FROM stock";
+$query = "SELECT id, urun_adi FROM stock";
 $result = $baglanti->query($query);
 
 $stockList = [];
